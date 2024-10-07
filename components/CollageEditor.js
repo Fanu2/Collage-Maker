@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 
 const CollageEditor = ({ images }) => {
   const canvasRef = useRef(null);
@@ -12,7 +12,7 @@ const CollageEditor = ({ images }) => {
     link.click();
   };
 
-  const drawCollage = () => {
+  const drawCollage = useCallback(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
 
@@ -24,34 +24,20 @@ const CollageEditor = ({ images }) => {
     const imgWidth = canvas.width / cols; // Image width based on canvas width
     const imgHeight = canvas.height / rows; // Image height based on canvas height
 
-    // Keep track of how many images have loaded
-    let imagesLoaded = 0;
-
     images.forEach((image, index) => {
       const img = new Image();
       img.src = image;
-      
       img.onload = () => {
         const x = (index % cols) * imgWidth; // Calculate x position
         const y = Math.floor(index / cols) * imgHeight; // Calculate y position
         ctx.drawImage(img, x, y, imgWidth, imgHeight); // Draw image
-
-        // Increment the count of loaded images
-        imagesLoaded++;
-
-        // Only redraw the collage when all images are loaded
-        if (imagesLoaded === images.length) {
-          ctx.drawImage(img, x, y, imgWidth, imgHeight);
-        }
       };
     });
-  };
+  }, [images]);
 
   useEffect(() => {
-    if (images.length > 0) {
-      drawCollage();
-    }
-  }, [images]); // Drawing the collage when images change
+    drawCollage();
+  }, [drawCollage]); // Only include drawCollage in the dependency array
 
   return (
     <div>
