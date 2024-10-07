@@ -2,12 +2,15 @@ import React from 'react';
 import { useDropzone } from 'react-dropzone';
 
 const ImageUploader = ({ onDrop }) => {
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: 'image/*',
+    onDrop,
+  });
 
   return (
-    <div {...getRootProps()} style={{ border: '2px dashed #ccc', padding: '20px', textAlign: 'center' }}>
+    <div {...getRootProps()} className="dropzone">
       <input {...getInputProps()} />
-      <p>Drag 'n' drop some images here, or click to select images</p>
+      <p>Drag 'n' drop some files here, or click to select files</p>
     </div>
   );
 };
